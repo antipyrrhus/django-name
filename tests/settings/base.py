@@ -1,8 +1,6 @@
 import os
 
-
-APP_ROOT = os.path.abspath(
-    os.path.join(os.path.dirname(__file__), '..'))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 DEBUG = True
 
@@ -15,6 +13,7 @@ INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.admin',
     'django.contrib.humanize',
+    'django.contrib.messages',
     'name',
     'tests',
 ]
@@ -38,8 +37,10 @@ TEMPLATES = [
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
-                'django.contrib.auth.context_processors.auth',
+                'django.template.context_processors.debug',
                 'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
                 'name.context_processors.name'
             ],
         },

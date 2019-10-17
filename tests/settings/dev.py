@@ -18,10 +18,7 @@ MIDDLEWARE += ['debug_toolbar.middleware.DebugToolbarMiddleware']  # noqa
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'name',
-        'USER': 'root',
-        'PASSWORD': 'root',
-        'HOST': 'mysql',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }

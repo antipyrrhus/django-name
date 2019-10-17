@@ -2,8 +2,9 @@ import json
 from datetime import datetime
 from itertools import groupby
 
-import markdown2
-from django.core.urlresolvers import reverse
+import markdown
+# from django.urls import reverse
+from django.urls import reverse
 from django.db import models, transaction
 from django.utils import timezone
 from django.utils.six.moves.urllib.parse import quote
@@ -50,9 +51,10 @@ class Identifier(models.Model):
     """
     type = models.ForeignKey(
         'Identifier_Type',
-        help_text="Catagorize this record's identifiers here")
+        help_text="Catagorize this record's identifiers here",
+        on_delete=models.CASCADE)
 
-    belong_to_name = models.ForeignKey('Name')
+    belong_to_name = models.ForeignKey('Name', on_delete=models.CASCADE)
     value = models.CharField(max_length=500)
     visible = models.BooleanField(default=True)
     order = models.IntegerField(default=0)
@@ -88,7 +90,7 @@ class Note(models.Model):
 
     note = models.TextField(help_text='Enter notes about this record here')
     note_type = models.IntegerField(choices=NOTE_TYPE_CHOICES)
-    belong_to_name = models.ForeignKey('Name')
+    belong_to_name = models.ForeignKey('Name', on_delete=models.CASCADE)
 
     objects = NoteManager()
 
@@ -122,7 +124,7 @@ class Variant(models.Model):
         (OTHER, 'Other')
     )
 
-    belong_to_name = models.ForeignKey('Name')
+    belong_to_name = models.ForeignKey('Name', on_delete=models.CASCADE)
     variant_type = models.IntegerField(
         choices=VARIANT_TYPE_CHOICES,
         help_text='Choose variant type.')
@@ -221,11 +223,11 @@ class NameManager(models.Manager):
         names = self.visible()
         return {
             'total': names.count(),
-            'personal': len(filter(lambda n: n.is_personal(), names)),
-            'organization': len(filter(lambda n: n.is_organization(), names)),
-            'event': len(filter(lambda n: n.is_event(), names)),
-            'software': len(filter(lambda n: n.is_software(), names)),
-            'building': len(filter(lambda n: n.is_building(), names))
+            'personal': len(list(filter(lambda n: n.is_personal(), names))),
+            'organization': len(list(filter(lambda n: n.is_organization(), names))),
+            'event': len(list(filter(lambda n: n.is_event(), names))),
+            'software': len(list(filter(lambda n: n.is_software(), names))),
+            'building': len(list(filter(lambda n: n.is_building(), names)))
         }
 
     def _counts_per_month(self, date_column):
@@ -376,7 +378,8 @@ class Name(models.Model):
         'self',
         blank=True,
         null=True,
-        related_name='merged_with_name')
+        related_name='merged_with_name',
+        on_delete=models.CASCADE)
 
     date_created = models.DateTimeField(auto_now_add=True, editable=False)
     last_modified = models.DateTimeField(auto_now=True, editable=False)
@@ -471,7 +474,7 @@ class Name(models.Model):
 
     def render_biography(self):
         """Render the Markdown biography to HTML."""
-        return markdown2.markdown(self.biography)
+        return markdown.markdown(self.biography)
 
     def __normalize_name(self):
         """Normalize the name attribute and assign it the normalized_name
@@ -558,7 +561,7 @@ class Location(models.Model):
     </strong>
     """
 
-    belong_to_name = models.ForeignKey('Name')
+    belong_to_name = models.ForeignKey('Name', on_delete=models.CASCADE)
 
     latitude = models.DecimalField(
         max_digits=13,

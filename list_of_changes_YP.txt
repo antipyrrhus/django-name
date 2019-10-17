@@ -1,0 +1,22 @@
+- Converted to Pipenv and upgraded to latest versions of EACH library
+  in requirements.txt. Chief amongst the upgrades are new versions of
+  python and django (respectively 3.7.4 and 2.2.6).
+
+- Pipenv failed in installing mysql-python since it does not support python3
+  as of 2019.10. See https://pypi.org/project/MySQL-python/
+  ("Python-3.0 will be supported in a future release.")
+  Hence, we'll see if we can survive with the built-in sqlite3 for
+  initial testing purposes.
+
+- Cleared the migration directory and re-ran makemigrations / migrate /
+  superuser creation, as the old version ran on mysql-python which is
+  incompatible with python3 as indicated above.
+
+- As of 2019.10, pynaco does not officially support Python3. However,
+  its github page has a branch 'py3' which contains the updated naco.py file.
+  Grabbed the updated file from
+  https://github.com/unt-libraries/pynaco/tree/py3/pynaco
+  and copy-pasted into our copy of the same file in our
+  Pipenv virtual environment.
+- Various other changes were made to the code to account for the
+  above-mentioned upgrades.
